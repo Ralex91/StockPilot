@@ -29,4 +29,27 @@ router.get("/:id", async (req, res) => {
   }
 })
 
+router.post("/", async (req, res) => {
+  const {
+    product_name,
+    description,
+    price,
+    stock_quantity,
+    category_id,
+    supplier_id,
+  } = req.body
+
+  try {
+    const [result] = await db.query(
+      `INSERT INTO Products (product_name, description, price, stock_quantity, category_id, supplier_id) VALUES ('${product_name}', '${description}', ${price}, ${stock_quantity}, ${category_id}, ${supplier_id})`
+    )
+
+    res
+      .status(201)
+      .json({ message: "Product added", productId: result.insertId })
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+})
+
 export default router
