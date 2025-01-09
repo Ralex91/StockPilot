@@ -77,4 +77,20 @@ router.put("/:id", async (req, res) => {
   }
 })
 
+router.delete("/:id", async (req, res) => {
+  try {
+    const [result] = await db.query(
+      `DELETE FROM Products WHERE product_id = ${req.params.id}`
+    )
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Product not found" })
+    }
+
+    res.json({ message: "Product deleted" })
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+})
+
 export default router
