@@ -52,4 +52,29 @@ router.post("/", async (req, res) => {
   }
 })
 
+router.put("/:id", async (req, res) => {
+  const {
+    product_name,
+    description,
+    price,
+    stock_quantity,
+    category_id,
+    supplier_id,
+  } = req.body
+
+  try {
+    const [result] = await db.query(
+      `UPDATE Products SET product_name = '${product_name}', description = '${description}', price = ${price}, stock_quantity = ${stock_quantity}, category_id = ${category_id}, supplier_id = ${supplier_id} WHERE product_id = ${req.params.id}`
+    )
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Product not found" })
+    }
+
+    res.json({ message: "Product updated" })
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+})
+
 export default router
