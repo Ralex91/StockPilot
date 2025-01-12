@@ -61,8 +61,11 @@ export const suppliersDoc = {
           content: {
             "application/json": {
               example: {
-                message: "Supplier added",
-                supplierId: 1,
+                supplier_id: 1,
+                supplier_name: "Office Supplies Co.",
+                contact: "Jane Smith",
+                phone: "987-654-3210",
+                address: "456 Office Road",
               },
             },
           },
@@ -153,7 +156,11 @@ export const suppliersDoc = {
           content: {
             "application/json": {
               example: {
-                message: "Supplier updated successfully",
+                supplier_id: 1,
+                supplier_name: "Updated Supplies Co.",
+                contact: "Michael Johnson",
+                phone: "321-987-6543",
+                address: "789 Updated Avenue",
               },
             },
           },
@@ -189,7 +196,11 @@ export const suppliersDoc = {
           content: {
             "application/json": {
               example: {
-                message: "Supplier deleted",
+                supplier_id: 1,
+                supplier_name: "Tech Supplies Ltd.",
+                contact: "John Doe",
+                phone: "123-456-7890",
+                address: "123 Tech Street",
               },
             },
           },

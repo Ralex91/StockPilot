@@ -52,8 +52,9 @@ export const ordersDoc = {
           content: {
             "application/json": {
               example: {
-                message: "Order added",
-                orderId: 1,
+                order_id: 1,
+                order_date: "2022-01-01",
+                customer_id: 1,
               },
             },
           },
@@ -137,7 +138,9 @@ export const ordersDoc = {
           content: {
             "application/json": {
               example: {
-                message: "Order updated",
+                order_id: 1,
+                order_date: "2022-01-01",
+                customer_id: 1,
               },
             },
           },
@@ -173,7 +176,9 @@ export const ordersDoc = {
           content: {
             "application/json": {
               example: {
-                message: "Order deleted",
+                order_id: 1,
+                order_date: "2022-01-01",
+                customer_id: 1,
               },
             },
           },

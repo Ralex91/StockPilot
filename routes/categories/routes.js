@@ -3,29 +3,21 @@ import db from "../../utils/db.js"
 
 const router = Router()
 
+const checkCategoryExist = async (category_id) =>
+  await db.categories.count({
+    where: {
+      category_id,
+    },
+  })
+
 router.get("/", async (_, res) => {
   try {
-    const [results] = await db.query("SELECT * FROM Categories")
+    const categories = await db.categories.findMany()
 
-    res.json(results)
+    res.json(categories)
   } catch (error) {
-    res.status(500).json({ error: error.message })
-  }
-})
-
-router.get("/:id", async (req, res) => {
-  try {
-    const [results] = await db.query(
-      `SELECT * FROM Categories WHERE category_id = ${req.params.id}`
-    )
-
-    if (results.length === 0) {
-      return res.status(404).json({ message: "Category not found" })
-    }
-
-    res.json(results[0])
-  } catch (error) {
-    res.status(500).json({ error: error.message })
+    console.error(error)
+    res.status(500).json({ error: "Internal server error" })
   }
 })
 
@@ -33,15 +25,36 @@ router.post("/", async (req, res) => {
   const { category_name, description } = req.body
 
   try {
-    const [result] = await db.query(
-      `INSERT INTO Categories (category_name, description) VALUES ('${category_name}', '${description}')`
-    )
+    const newCategory = await db.categories.create({
+      data: {
+        category_name,
+        description,
+      },
+    })
 
-    res
-      .status(201)
-      .json({ message: "Category added", categoryId: result.insertId })
+    res.status(201).json(newCategory)
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    console.error(error)
+    res.status(500).json({ error: "Internal server error" })
+  }
+})
+
+router.get("/:id", async (req, res) => {
+  try {
+    const categorie = await db.categories.findFirst({
+      where: {
+        category_id: Number(req.params.id),
+      },
+    })
+
+    if (!categorie) {
+      return res.status(404).json({ message: "Category not found" })
+    }
+
+    res.json(categorie)
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ error: "Internal server error" })
   }
 })
 
@@ -49,33 +62,47 @@ router.put("/:id", async (req, res) => {
   const { category_name, description } = req.body
 
   try {
-    const [result] = await db.query(
-      `UPDATE Categories SET category_name = '${category_name}', description = '${description}' WHERE category_id = ${req.params.id}`
-    )
+    const isCategoryExist = await checkCategoryExist(Number(req.params.id))
 
-    if (result.affectedRows === 0) {
+    if (!isCategoryExist) {
       return res.status(404).json({ message: "Category not found" })
     }
 
-    res.json({ message: "Category updated" })
+    const updatedCategory = await db.categories.update({
+      where: {
+        category_id: Number(req.params.id),
+      },
+      data: {
+        category_name,
+        description,
+      },
+    })
+
+    res.json(updatedCategory)
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    console.error(error)
+    res.status(500).json({ error: "Internal server error" })
   }
 })
 
 router.delete("/:id", async (req, res) => {
   try {
-    const [result] = await db.query(
-      `DELETE FROM Categories WHERE category_id = ${req.params.id}`
-    )
+    const isCategoryExist = await checkCategoryExist(Number(req.params.id))
 
-    if (result.affectedRows === 0) {
+    if (!isCategoryExist) {
       return res.status(404).json({ message: "Category not found" })
     }
 
-    res.json({ message: "Category deleted" })
+    const deletedCategory = await db.categories.delete({
+      where: {
+        category_id: Number(req.params.id),
+      },
+    })
+
+    res.json(deletedCategory)
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    console.error(error)
+    res.status(500).json({ error: "Internal server error" })
   }
 })
 

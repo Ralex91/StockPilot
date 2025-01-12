@@ -3,29 +3,21 @@ import db from "../../utils/db.js"
 
 const router = Router()
 
+const checkCustomerExist = async (customer_id) =>
+  await db.customers.count({
+    where: {
+      customer_id,
+    },
+  })
+
 router.get("/", async (_, res) => {
   try {
-    const [results] = await db.query("SELECT * FROM Customers")
+    const customers = await db.customers.findMany()
 
-    res.json(results)
+    res.json(customers)
   } catch (error) {
-    res.status(500).json({ error: error.message })
-  }
-})
-
-router.get("/:id", async (req, res) => {
-  try {
-    const [results] = await db.query(
-      `SELECT * FROM Customers WHERE customer_id = ${req.params.id}`
-    )
-
-    if (results.length === 0) {
-      return res.status(404).json({ message: "Customer not found" })
-    }
-
-    res.json(results[0])
-  } catch (error) {
-    res.status(500).json({ error: error.message })
+    console.error(error)
+    res.status(500).json({ error: "Internal server error" })
   }
 })
 
@@ -33,48 +25,87 @@ router.post("/", async (req, res) => {
   const { customer_name, email, phone, address } = req.body
 
   try {
-    const [result] = await db.query(
-      `INSERT INTO Customers (customer_name, email, phone, address) VALUES ('${customer_name}', '${email}', '${phone}', '${address}')`
-    )
+    const customer = await db.customers.create({
+      data: {
+        customer_name,
+        email,
+        phone,
+        address,
+      },
+    })
 
-    res
-      .status(201)
-      .json({ message: "Customer added", customerId: result.insertId })
+    res.status(201).json(customer)
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    console.error(error)
+    res.status(500).json({ error: "Internal server error" })
+  }
+})
+
+router.get("/:id", async (req, res) => {
+  try {
+    const customer = await db.customers.findFirst({
+      where: {
+        customer_id: Number(req.params.id),
+      },
+    })
+
+    if (!customer) {
+      return res.status(404).json({ message: "Customer not found" })
+    }
+
+    res.json(customer)
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ error: "Internal server error" })
   }
 })
 
 router.put("/:id", async (req, res) => {
   const { customer_name, email, phone, address } = req.body
   try {
-    const [result] = await db.query(
-      `UPDATE Customers SET customer_name = '${customer_name}', email = '${email}', phone = '${phone}', address = '${address}' WHERE customer_id = ${req.params.id}`
-    )
+    const isCustomerExist = await checkCustomerExist(Number(req.params.id))
 
-    if (result.affectedRows === 0) {
+    if (!isCustomerExist) {
       return res.status(404).json({ message: "Customer not found" })
     }
 
-    res.json({ message: "Customer updated" })
+    const updatedCustomer = await db.customers.update({
+      where: {
+        customer_id: Number(req.params.id),
+      },
+      data: {
+        customer_name,
+        email,
+        phone,
+        address,
+      },
+    })
+
+    res.json(updatedCustomer)
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    console.error(error)
+    res.status(500).json({ error: "Internal server error" })
   }
 })
 
 router.delete("/:id", async (req, res) => {
   try {
-    const [result] = await db.query(
-      `DELETE FROM Customers WHERE customer_id = ${req.params.id}`
-    )
+    const isCustomerExist = await checkCustomerExist(Number(req.params.id))
 
-    if (result.affectedRows === 0) {
+    if (!isCustomerExist) {
       return res.status(404).json({ message: "Customer not found" })
     }
 
-    res.json({ message: "Customer deleted" })
+    const deletedCustomer = await db.customers.delete({
+      where: {
+        customer_id: Number(req.params.id),
+      },
+    })
+
+    res.json(deletedCustomer)
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    console.error(error)
+    res.status(500).json({ error: "Internal server error" })
   }
 })
 

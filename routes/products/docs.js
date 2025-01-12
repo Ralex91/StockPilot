@@ -69,8 +69,13 @@ export const productsDoc = {
           content: {
             "application/json": {
               example: {
-                message: "Product added",
-                productId: 1,
+                product_id: 1,
+                product_name: "Laptop",
+                description: "High-end gaming laptop",
+                price: 1500.0,
+                stock_quantity: 10,
+                category_id: 2,
+                supplier_id: 1,
               },
             },
           },
@@ -167,7 +172,13 @@ export const productsDoc = {
           content: {
             "application/json": {
               example: {
-                message: "Product updated successfully",
+                product_id: 1,
+                product_name: "Updated Laptop",
+                description: "Updated description",
+                price: 1400.0,
+                stock_quantity: 5,
+                category_id: 2,
+                supplier_id: 1,
               },
             },
           },
@@ -203,7 +214,13 @@ export const productsDoc = {
           content: {
             "application/json": {
               example: {
-                message: "Product deleted successfully",
+                product_id: 1,
+                product_name: "Laptop",
+                description: "High-end gaming laptop",
+                price: 1500.0,
+                stock_quantity: 10,
+                category_id: 2,
+                supplier_id: 1,
               },
             },
           },

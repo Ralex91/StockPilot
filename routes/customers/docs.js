@@ -60,8 +60,11 @@ export const customersDoc = {
           content: {
             "application/json": {
               example: {
-                message: "Customer added",
-                customerId: 1,
+                customer_id: 1,
+                customer_name: "John Doe",
+                email: "oZk0o@example.com",
+                phone: "123-456-7890",
+                address: "123 Main Street",
               },
             },
           },
@@ -151,7 +154,11 @@ export const customersDoc = {
           content: {
             "application/json": {
               example: {
-                message: "Customer updated successfully",
+                customer_id: 1,
+                customer_name: "John Doe",
+                email: "oZk0o@example.com",
+                phone: "123-456-7890",
+                address: "123 Main Street",
               },
             },
           },
@@ -187,7 +194,11 @@ export const customersDoc = {
           content: {
             "application/json": {
               example: {
-                message: "Customer deleted",
+                customer_id: 1,
+                customer_name: "John Doe",
+                email: "oZk0o@example.com",
+                phone: "123-456-7890",
+                address: "123 Main Street",
               },
             },
           },

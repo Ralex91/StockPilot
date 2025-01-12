@@ -3,44 +3,55 @@ import db from "../../utils/db.js"
 
 const router = Router()
 
+const checkSupplierExist = async (supplier_id) =>
+  await db.suppliers.count({ where: { supplier_id } })
+
 router.get("/", async (_, res) => {
   try {
-    const [results] = await db.query("SELECT * FROM Suppliers")
+    const suppliers = await db.suppliers.findMany()
 
-    res.json(results)
+    res.json(suppliers)
   } catch (error) {
-    res.status(500).json({ error: error.message })
-  }
-})
-
-router.get("/:id", async (req, res) => {
-  try {
-    const [results] = await db.query(
-      `SELECT * FROM Suppliers WHERE supplier_id = ${req.params.id}`
-    )
-
-    if (results.length === 0) {
-      return res.status(404).json({ message: "Supplier not found" })
-    }
-
-    res.json(results[0])
-  } catch (error) {
-    res.status(500).json({ error: error.message })
+    console.error(error)
+    res.status(500).json({ error: "Internal server error" })
   }
 })
 
 router.post("/", async (req, res) => {
   const { supplier_name, contact, phone, address } = req.body
   try {
-    const [result] = await db.query(
-      `INSERT INTO Suppliers (supplier_name, contact, phone, address) VALUES ('${supplier_name}', '${contact}', '${phone}', '${address}')`
-    )
+    const newSupplier = await db.suppliers.create({
+      data: {
+        supplier_name,
+        contact,
+        phone,
+        address,
+      },
+    })
 
-    res
-      .status(201)
-      .json({ message: "Supplier added", supplierId: result.insertId })
+    res.status(201).json(newSupplier)
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    console.error(error)
+    res.status(500).json({ error: "Internal server error" })
+  }
+})
+
+router.get("/:id", async (req, res) => {
+  try {
+    const supplier = await db.suppliers.findFirst({
+      where: {
+        supplier_id: Number(req.params.id),
+      },
+    })
+
+    if (!supplier) {
+      return res.status(404).json({ message: "Supplier not found" })
+    }
+
+    res.json(supplier)
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ error: "Internal server error" })
   }
 })
 
@@ -48,33 +59,49 @@ router.put("/:id", async (req, res) => {
   const { supplier_name, contact, phone, address } = req.body
 
   try {
-    const [result] = await db.query(
-      `UPDATE Suppliers SET supplier_name = '${supplier_name}', contact = '${contact}', phone = '${phone}', address = '${address}' WHERE supplier_id = ${req.params.id}`
-    )
+    const isSupplierExist = await checkSupplierExist(Number(req.params.id))
 
-    if (result.affectedRows === 0) {
+    if (!isSupplierExist) {
       return res.status(404).json({ message: "Supplier not found" })
     }
 
-    res.json({ message: "Supplier updated" })
+    const updatedSupplier = await db.suppliers.update({
+      where: {
+        supplier_id: Number(req.params.id),
+      },
+      data: {
+        supplier_name,
+        contact,
+        phone,
+        address,
+      },
+    })
+
+    res.json(updatedSupplier)
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    console.error(error)
+    res.status(500).json({ error: "Internal server error" })
   }
 })
 
 router.delete("/:id", async (req, res) => {
   try {
-    const [result] = await db.query(
-      `DELETE FROM Suppliers WHERE supplier_id = ${req.params.id}`
-    )
+    const isSupplierExist = await checkSupplierExist(Number(req.params.id))
 
-    if (result.affectedRows === 0) {
+    if (!isSupplierExist) {
       return res.status(404).json({ message: "Supplier not found" })
     }
 
-    res.json({ message: "Supplier deleted" })
+    const deletedSupplier = await db.suppliers.delete({
+      where: {
+        supplier_id: Number(req.params.id),
+      },
+    })
+
+    res.json(deletedSupplier)
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    console.error(error)
+    res.status(500).json({ error: "Internal server error" })
   }
 })
 

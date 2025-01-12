@@ -20,6 +20,6 @@ app.use((_, res) => {
   res.status(404).json({ error: "Not found" })
 })
 
-app.listen(3333, () =>
+app.listen(3333, () => {
   console.log("Server running on port 3333 : http://localhost:3333")
-)
+})

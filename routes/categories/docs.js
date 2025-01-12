@@ -52,8 +52,9 @@ export const categoriesDocs = {
           content: {
             "application/json": {
               example: {
-                message: "Category added",
-                categoryId: 1,
+                category_id: 1,
+                category_name: "Electronics",
+                description: "Electronics category",
               },
             },
           },
@@ -137,7 +138,9 @@ export const categoriesDocs = {
           content: {
             "application/json": {
               example: {
-                message: "Category updated",
+                category_id: 1,
+                category_name: "Electronics",
+                description: "Electronics category",
               },
             },
           },
