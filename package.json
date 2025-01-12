@@ -6,7 +6,9 @@
   "private": false,
   "scripts": {
     "dev": "nodemon index.js",
-    "start": "node index.js"
+    "start": "node index.js",
+    "db:create": "node ./scripts/database.js create",
+    "db:drop": "node ./scripts/database.js drop"
   },
   "keywords": [],
   "license": "ISC",
