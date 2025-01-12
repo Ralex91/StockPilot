@@ -4,7 +4,7 @@ import db from "../../utils/db.js"
 const router = Router()
 
 const checkOrderExist = async (category_id) =>
-  await db.categories.count({
+  await db.orders.count({
     where: {
       category_id,
     },
