@@ -216,4 +216,51 @@ export const customersDoc = {
       },
     },
   },
+  "/customers/{id}/orders": {
+    get: {
+      tags: ["Customers"],
+      summary: "Get all orders for a customer by ID",
+      parameters: [
+        {
+          name: "id",
+          in: "path",
+          required: true,
+          schema: {
+            type: "integer",
+          },
+        },
+      ],
+      responses: {
+        200: {
+          description: "A list of orders",
+          content: {
+            "application/json": {
+              example: [
+                {
+                  order_id: 1,
+                  order_date: "2022-01-01",
+                  customer_id: 1,
+                },
+                {
+                  order_id: 2,
+                  order_date: "2022-02-01",
+                  customer_id: 1,
+                },
+              ],
+            },
+          },
+        },
+        404: {
+          description: "Customer not found",
+          content: {
+            "application/json": {
+              example: {
+                error: "Customer not found",
+              },
+            },
+          },
+        },
+      },
+    },
+  },
 }
