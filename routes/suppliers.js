@@ -49,7 +49,7 @@ router.put("/:id", async (req, res) => {
 
   try {
     const [result] = await db.query(
-      `UPDATE Suppliers SET supplier_name = ${supplier_name}, contact = '${contact}', phone = '${phone}', address = '${address}' WHERE supplier_id = ${req.params.id}`
+      `UPDATE Suppliers SET supplier_name = '${supplier_name}', contact = '${contact}', phone = '${phone}', address = '${address}' WHERE supplier_id = ${req.params.id}`
     )
 
     if (result.affectedRows === 0) {

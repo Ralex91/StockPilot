@@ -1,5 +1,7 @@
 import cors from "cors"
 import express from "express"
+import swaggerUi from "swagger-ui-express"
+import swaggerDocument from "./lib/doc.js"
 import routes from "./routes/index.js"
 
 const app = express()
@@ -8,8 +10,10 @@ app.use(cors())
 app.use(express.json())
 
 app.get("/", (_, res) => {
-  res.send("StockPilot REST API")
+  res.send("Welcome to StockPilot API, documentation is available at /docs")
 })
+
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
 app.use(routes)
 app.use((_, res) => {
