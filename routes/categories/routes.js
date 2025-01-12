@@ -1,5 +1,6 @@
 import { Router } from "express"
 import db from "../../utils/db.js"
+import { CategorySchema } from "./schemas.js"
 
 const router = Router()
 
@@ -22,9 +23,15 @@ router.get("/", async (_, res) => {
 })
 
 router.post("/", async (req, res) => {
-  const { category_name, description } = req.body
-
   try {
+    const { data, error } = CategorySchema.safeParse(req.body)
+
+    if (error) {
+      return res.status(400).json({ error: error.flatten().fieldErrors })
+    }
+
+    const { category_name, description } = data
+
     const newCategory = await db.categories.create({
       data: {
         category_name,
@@ -67,6 +74,14 @@ router.put("/:id", async (req, res) => {
     if (!isCategoryExist) {
       return res.status(404).json({ message: "Category not found" })
     }
+
+    const { data, error } = CategorySchema.safeParse(req.body)
+
+    if (error) {
+      return res.status(400).json({ error: error.flatten().fieldErrors })
+    }
+
+    const { category_name, description } = data
 
     const updatedCategory = await db.categories.update({
       where: {

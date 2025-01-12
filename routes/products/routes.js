@@ -18,16 +18,22 @@ router.get("/", async (_, res) => {
 })
 
 router.post("/", async (req, res) => {
-  const {
-    product_name,
-    description,
-    price,
-    stock_quantity,
-    category_id,
-    supplier_id,
-  } = req.body
-
   try {
+    const { data, error } = CustomerSchema.safeParse(req.body)
+
+    if (error) {
+      return res.status(400).json({ error: error.flatten().fieldErrors })
+    }
+
+    const {
+      product_name,
+      description,
+      price,
+      stock_quantity,
+      category_id,
+      supplier_id,
+    } = data
+
     const newProduct = await db.products.create({
       data: {
         product_name,
@@ -64,21 +70,27 @@ router.get("/:id", async (req, res) => {
 })
 
 router.put("/:id", async (req, res) => {
-  const {
-    product_name,
-    description,
-    price,
-    stock_quantity,
-    category_id,
-    supplier_id,
-  } = req.body
-
   try {
     const isProductExist = await checkProductExist(Number(req.params.id))
 
     if (!isProductExist) {
       return res.status(404).json({ message: "Product not found" })
     }
+
+    const { data, error } = CustomerSchema.safeParse(req.body)
+
+    if (error) {
+      return res.status(400).json({ error: error.flatten().fieldErrors })
+    }
+
+    const {
+      product_name,
+      description,
+      price,
+      stock_quantity,
+      category_id,
+      supplier_id,
+    } = data
 
     const updatedProduct = await db.products.update({
       where: {

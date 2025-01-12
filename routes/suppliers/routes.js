@@ -18,8 +18,15 @@ router.get("/", async (_, res) => {
 })
 
 router.post("/", async (req, res) => {
-  const { supplier_name, contact, phone, address } = req.body
   try {
+    const { data, error } = CustomerSchema.safeParse(req.body)
+
+    if (error) {
+      return res.status(400).json({ error: error.flatten().fieldErrors })
+    }
+
+    const { supplier_name, contact, phone, address } = data
+
     const newSupplier = await db.suppliers.create({
       data: {
         supplier_name,
@@ -56,14 +63,20 @@ router.get("/:id", async (req, res) => {
 })
 
 router.put("/:id", async (req, res) => {
-  const { supplier_name, contact, phone, address } = req.body
-
   try {
     const isSupplierExist = await checkSupplierExist(Number(req.params.id))
 
     if (!isSupplierExist) {
       return res.status(404).json({ message: "Supplier not found" })
     }
+
+    const { data, error } = CustomerSchema.safeParse(req.body)
+
+    if (error) {
+      return res.status(400).json({ error: error.flatten().fieldErrors })
+    }
+
+    const { supplier_name, contact, phone, address } = data
 
     const updatedSupplier = await db.suppliers.update({
       where: {

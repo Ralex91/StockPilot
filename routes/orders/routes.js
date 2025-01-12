@@ -1,5 +1,6 @@
 import { Router } from "express"
 import db from "../../utils/db.js"
+import { CustomerSchema } from "./schemas.js"
 
 const router = Router()
 
@@ -22,8 +23,15 @@ router.get("/", async (_, res) => {
 })
 
 router.post("/", async (req, res) => {
-  const { order_date, customer_id } = req.body
   try {
+    const { data, error } = CustomerSchema.safeParse(req.body)
+
+    if (error) {
+      return res.status(400).json({ error: error.flatten().fieldErrors })
+    }
+
+    const { order_date, customer_id } = data
+
     const newOrder = await db.orders.create({
       data: {
         order_date: new Date(order_date),
@@ -58,14 +66,20 @@ router.get("/:id", async (req, res) => {
 })
 
 router.put("/:id", async (req, res) => {
-  const { order_date, customer_id } = req.body
-
   try {
     const isOrderExist = await checkOrderExist(Number(req.params.id))
 
     if (!isOrderExist) {
       return res.status(404).json({ message: "Order not found" })
     }
+
+    const { data, error } = CustomerSchema.safeParse(req.body)
+
+    if (error) {
+      return res.status(400).json({ error: error.flatten().fieldErrors })
+    }
+
+    const { order_date, customer_id } = data
 
     const updatedOrder = await db.orders.update({
       where: {
