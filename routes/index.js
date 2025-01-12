@@ -1,6 +1,7 @@
 import { Router } from "express"
 import categoriesRouter from "./categories.js"
 import customersRouter from "./customers.js"
+import ordersRouter from "./orders.js"
 import productsRouter from "./products.js"
 import suppliersRouter from "./suppliers.js"
 
@@ -22,6 +23,10 @@ const routesDefinitions = [
   {
     path: "/customers",
     router: customersRouter,
+  },
+  {
+    path: "/orders",
+    router: ordersRouter,
   },
 ]
 
