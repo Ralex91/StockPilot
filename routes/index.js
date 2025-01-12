@@ -1,9 +1,9 @@
 import { Router } from "express"
-import categoriesRouter from "./categories.js"
-import customersRouter from "./customers.js"
-import ordersRouter from "./orders.js"
-import productsRouter from "./products.js"
-import suppliersRouter from "./suppliers.js"
+import categoriesRouter from "./categories/routes.js"
+import customersRouter from "./customers/routes.js"
+import ordersRouter from "./orders/routes.js"
+import productsRouter from "./products/routes.js"
+import suppliersRouter from "./suppliers/routes.js"
 
 const router = Router()
 

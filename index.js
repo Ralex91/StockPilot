@@ -1,8 +1,8 @@
 import cors from "cors"
 import express from "express"
 import swaggerUi from "swagger-ui-express"
-import swaggerDocument from "./lib/doc.js"
 import routes from "./routes/index.js"
+import swaggerDocument from "./utils/swagger.js"
 
 const app = express()
 
