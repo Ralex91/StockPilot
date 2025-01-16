@@ -240,11 +240,43 @@ export const customersDoc = {
                   order_id: 1,
                   order_date: "2022-01-01",
                   customer_id: 1,
+                  order_lines: [
+                    {
+                      order_line_id: 1,
+                      order_id: 1,
+                      product_id: 1,
+                      quantity: 2,
+                      unit_price: 99.99,
+                    },
+                    {
+                      order_line_id: 2,
+                      order_id: 1,
+                      product_id: 2,
+                      quantity: 1,
+                      unit_price: 49.99,
+                    },
+                  ],
                 },
                 {
                   order_id: 2,
                   order_date: "2022-02-01",
                   customer_id: 1,
+                  order_lines: [
+                    {
+                      order_line_id: 3,
+                      order_id: 2,
+                      product_id: 3,
+                      quantity: 3,
+                      unit_price: 29.99,
+                    },
+                    {
+                      order_line_id: 4,
+                      order_id: 2,
+                      product_id: 4,
+                      quantity: 1,
+                      unit_price: 9.99,
+                    },
+                  ],
                 },
               ],
             },

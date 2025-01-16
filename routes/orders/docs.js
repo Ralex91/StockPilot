@@ -3,6 +3,26 @@ export const ordersDoc = {
     get: {
       tags: ["Orders"],
       summary: "Get all orders",
+      parameters: [
+        {
+          name: "start",
+          description: "Start date",
+          in: "query",
+          required: false,
+          schema: {
+            type: "string",
+          },
+        },
+        {
+          name: "end",
+          description: "End date",
+          in: "query",
+          required: false,
+          schema: {
+            type: "string",
+          },
+        },
+      ],
       responses: {
         200: {
           description: "A list of orders",
@@ -13,11 +33,43 @@ export const ordersDoc = {
                   order_id: 1,
                   order_date: "2022-01-01",
                   customer_id: 1,
+                  order_lines: [
+                    {
+                      order_line_id: 1,
+                      order_id: 1,
+                      product_id: 1,
+                      quantity: 2,
+                      unit_price: 99.99,
+                    },
+                    {
+                      order_line_id: 2,
+                      order_id: 1,
+                      product_id: 2,
+                      quantity: 1,
+                      unit_price: 49.99,
+                    },
+                  ],
                 },
                 {
                   order_id: 2,
                   order_date: "2022-02-01",
                   customer_id: 2,
+                  order_lines: [
+                    {
+                      order_line_id: 1,
+                      order_id: 1,
+                      product_id: 1,
+                      quantity: 2,
+                      unit_price: 99.99,
+                    },
+                    {
+                      order_line_id: 2,
+                      order_id: 1,
+                      product_id: 2,
+                      quantity: 1,
+                      unit_price: 49.99,
+                    },
+                  ],
                 },
               ],
             },

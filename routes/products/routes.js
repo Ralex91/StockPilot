@@ -69,6 +69,28 @@ router.get("/:id", async (req, res) => {
   }
 })
 
+router.get("/:id/orders", async (req, res) => {
+  try {
+    const orders = await db.orders.findMany({
+      where: {
+        order_lines: {
+          some: {
+            product_id: Number(req.params.id),
+          },
+        },
+      },
+      include: {
+        order_lines: true,
+      },
+    })
+
+    res.json(orders)
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ error: "Internal server error" })
+  }
+})
+
 router.put("/:id", async (req, res) => {
   try {
     const isProductExist = await checkProductExist(Number(req.params.id))

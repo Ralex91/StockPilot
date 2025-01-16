@@ -73,6 +73,9 @@ router.get("/:id/orders", async (req, res) => {
       where: {
         customer_id: Number(req.params.id),
       },
+      include: {
+        order_lines: true,
+      },
     })
 
     res.json(orders)

@@ -1,6 +1,6 @@
 import { Router } from "express"
 import db from "../../utils/db.js"
-import { CustomerSchema } from "./schemas.js"
+import { CustomerSchema, DateRangeSchema } from "./schemas.js"
 
 const router = Router()
 
@@ -11,9 +11,34 @@ const checkOrderExist = async (category_id) =>
     },
   })
 
-router.get("/", async (_, res) => {
+router.get("/", async (req, res) => {
   try {
-    const orders = await db.orders.findMany()
+    const rawStart = req.query.start
+    const rawEnd = req.query.end
+
+    const {
+      data: { start, end },
+      error,
+    } = DateRangeSchema.safeParse({
+      start: rawStart,
+      end: rawEnd,
+    })
+
+    if (error) {
+      return res.status(400).json({ error: error.flatten().fieldErrors })
+    }
+
+    const orders = await db.orders.findMany({
+      where: {
+        order_date: {
+          ...(start && { gte: new Date(start) }),
+          ...(end && { lte: new Date(end) }),
+        },
+      },
+      include: {
+        order_lines: true,
+      },
+    })
 
     res.json(orders)
   } catch (error) {
