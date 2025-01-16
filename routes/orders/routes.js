@@ -16,10 +16,7 @@ router.get("/", async (req, res) => {
     const rawStart = req.query.start
     const rawEnd = req.query.end
 
-    const {
-      data: { start, end },
-      error,
-    } = DateRangeSchema.safeParse({
+    const { data, error } = DateRangeSchema.safeParse({
       start: rawStart,
       end: rawEnd,
     })
@@ -31,8 +28,8 @@ router.get("/", async (req, res) => {
     const orders = await db.orders.findMany({
       where: {
         order_date: {
-          ...(start && { gte: new Date(start) }),
-          ...(end && { lte: new Date(end) }),
+          ...(data.start && { gte: new Date(data.start) }),
+          ...(data.end && { lte: new Date(data.end) }),
         },
       },
       include: {
