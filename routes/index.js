@@ -3,6 +3,7 @@ import categoriesRouter from "./categories/routes.js"
 import customersRouter from "./customers/routes.js"
 import ordersRouter from "./orders/routes.js"
 import productsRouter from "./products/routes.js"
+import statsRouter from "./stats/routes.js"
 import suppliersRouter from "./suppliers/routes.js"
 
 const router = Router()
@@ -27,6 +28,10 @@ const routesDefinitions = [
   {
     path: "/orders",
     router: ordersRouter,
+  },
+  {
+    path: "/stats",
+    router: statsRouter,
   },
 ]
 

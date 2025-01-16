@@ -2,6 +2,7 @@ import { categoriesDocs } from "../routes/categories/docs.js"
 import { customersDoc } from "../routes/customers/docs.js"
 import { ordersDoc } from "../routes/orders/docs.js"
 import { productsDoc } from "../routes/products/docs.js"
+import { statsDoc } from "../routes/stats/docs.js"
 import { suppliersDoc } from "../routes/suppliers/docs.js"
 
 const swaggerDoc = {
@@ -23,6 +24,7 @@ const swaggerDoc = {
     ...productsDoc,
     ...categoriesDocs,
     ...ordersDoc,
+    ...statsDoc,
   },
 }
 
