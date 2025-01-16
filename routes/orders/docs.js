@@ -248,4 +248,114 @@ export const ordersDoc = {
       },
     },
   },
+  "/orders/{id}/lines": {
+    post: {
+      tags: ["Order Lines"],
+      summary: "Create a new order line",
+      parameters: [
+        {
+          name: "id",
+          in: "path",
+          required: true,
+          schema: {
+            type: "integer",
+          },
+        },
+      ],
+      requestBody: {
+        required: true,
+        content: {
+          "application/json": {
+            schema: {
+              type: "object",
+              properties: {
+                product_id: { type: "integer" },
+                quantity: { type: "integer" },
+              },
+            },
+            example: {
+              product_id: 1,
+              quantity: 2,
+            },
+          },
+        },
+      },
+      responses: {
+        200: {
+          description: "Order line created",
+          content: {
+            "application/json": {
+              example: {
+                order_line_id: 1,
+                order_id: 1,
+                product_id: 1,
+                quantity: 2,
+                unit_price: 99.99,
+              },
+            },
+          },
+        },
+        404: {
+          description: "Order not found",
+          content: {
+            "application/json": {
+              example: {
+                error: "Order not found",
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  "/orders/{id}/lines/{lineId}": {
+    delete: {
+      tags: ["Order Lines"],
+      summary: "Delete an order line by ID",
+      parameters: [
+        {
+          name: "id",
+          in: "path",
+          required: true,
+          schema: {
+            type: "integer",
+          },
+        },
+        {
+          name: "lineId",
+          in: "path",
+          required: true,
+          schema: {
+            type: "integer",
+          },
+        },
+      ],
+      responses: {
+        200: {
+          description: "Order line deleted",
+          content: {
+            "application/json": {
+              example: {
+                order_line_id: 1,
+                order_id: 1,
+                product_id: 1,
+                quantity: 2,
+                unit_price: 99.99,
+              },
+            },
+          },
+        },
+        404: {
+          description: "Order line not found",
+          content: {
+            "application/json": {
+              example: {
+                error: "Order line not found",
+              },
+            },
+          },
+        },
+      },
+    },
+  },
 }

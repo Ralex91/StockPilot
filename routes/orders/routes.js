@@ -1,6 +1,6 @@
 import { Router } from "express"
 import db from "../../utils/db.js"
-import { CustomerSchema, DateRangeSchema } from "./schemas.js"
+import { DateRangeSchema, OrderLineSchema, OrderSchema } from "./schemas.js"
 
 const router = Router()
 
@@ -46,7 +46,7 @@ router.get("/", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    const { data, error } = CustomerSchema.safeParse(req.body)
+    const { data, error } = OrderSchema.safeParse(req.body)
 
     if (error) {
       return res.status(400).json({ error: error.flatten().fieldErrors })
@@ -95,7 +95,7 @@ router.put("/:id", async (req, res) => {
       return res.status(404).json({ message: "Order not found" })
     }
 
-    const { data, error } = CustomerSchema.safeParse(req.body)
+    const { data, error } = OrderSchema.safeParse(req.body)
 
     if (error) {
       return res.status(400).json({ error: error.flatten().fieldErrors })
@@ -135,6 +135,91 @@ router.delete("/:id", async (req, res) => {
     })
 
     res.json(deletedOrder)
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ error: "Internal server error" })
+  }
+})
+
+router.post("/:id/lines", async (req, res) => {
+  try {
+    const order = await db.orders.findFirst({
+      where: {
+        order_id: Number(req.params.id),
+      },
+    })
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" })
+    }
+
+    const { data, error } = OrderLineSchema.safeParse(req.body)
+
+    if (error) {
+      return res.status(400).json({ error: error.flatten().fieldErrors })
+    }
+
+    const { product_id, quantity } = data
+
+    const product = await db.products.findFirst({
+      where: {
+        product_id,
+      },
+    })
+
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" })
+    }
+
+    if (product.stock_quantity < quantity) {
+      return res.status(400).json({ message: "Insufficient stock" })
+    }
+
+    const newOrderLine = await db.order_Lines.create({
+      data: {
+        order_id: order.order_id,
+        product_id,
+        unit_price: product.price,
+        quantity,
+      },
+    })
+
+    await db.products.update({
+      where: {
+        product_id,
+      },
+      data: {
+        stock_quantity: product.stock_quantity - quantity,
+      },
+    })
+
+    res.status(201).json(newOrderLine)
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ error: "Internal server error" })
+  }
+})
+
+router.delete("/:id/lines/:lineId", async (req, res) => {
+  try {
+    const orderLine = await db.order_lines.findFirst({
+      where: {
+        order_id: order.order_id,
+        order_line_id: Number(req.params.lineId),
+      },
+    })
+
+    if (!orderLine) {
+      return res.status(404).json({ message: "Order line not found" })
+    }
+
+    const deletedOrderLine = await db.order_lines.delete({
+      where: {
+        order_line_id: orderLine.order_line_id,
+      },
+    })
+
+    res.json(deletedOrderLine)
   } catch (error) {
     console.error(error)
     res.status(500).json({ error: "Internal server error" })

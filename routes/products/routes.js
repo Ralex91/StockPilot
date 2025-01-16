@@ -55,7 +55,7 @@ router.post("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const product = await db.products.findFirst({
-      where: { product_id: req.params.id },
+      where: { product_id: Number(req.params.id) },
     })
 
     if (!product) {
