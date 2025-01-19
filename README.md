@@ -19,6 +19,14 @@ pnpm install
 - Copy the `.env.example` file and rename it `.env`.
 - Replace the values with those appropriate for your environment
 
+### Create the database
+
+```bash
+npm run db:create
+or
+pnpm run db:create
+```
+
 ## Usage
 
 ### Start the server
