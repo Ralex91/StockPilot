@@ -114,6 +114,62 @@ export const ordersDoc = {
       },
     },
   },
+  "/orders/filter": {
+    get: {
+      tags: ["Orders"],
+      summary: "Filter orders",
+      parameters: [
+        {
+          name: "customer_id",
+          in: "query",
+          required: false,
+          schema: {
+            type: "integer",
+          },
+        },
+        {
+          name: "product_id",
+          in: "query",
+          required: false,
+          schema: {
+            type: "integer",
+          },
+        },
+        {
+          name: "start_date",
+          in: "query",
+          required: false,
+          schema: {
+            type: "string",
+          },
+        },
+        {
+          name: "end_date",
+          in: "query",
+          required: false,
+          schema: {
+            type: "string",
+          },
+        },
+      ],
+      responses: {
+        200: {
+          description: "A list of orders",
+          content: {
+            "application/json": {
+              example: [
+                {
+                  order_id: 1,
+                  order_date: "2022-01-01",
+                  customer_id: 1,
+                },
+              ],
+            },
+          },
+        },
+      },
+    },
+  },
   "/orders/{id}": {
     get: {
       tags: ["Orders"],

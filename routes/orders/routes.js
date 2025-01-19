@@ -1,6 +1,11 @@
 import { Router } from "express"
 import db from "../../utils/db.js"
-import { DateRangeSchema, OrderLineSchema, OrderSchema } from "./schemas.js"
+import {
+  DateRangeSchema,
+  FilterSchema,
+  OrderLineSchema,
+  OrderSchema,
+} from "./schemas.js"
 
 const router = Router()
 
@@ -37,6 +42,47 @@ router.get("/", async (req, res) => {
       },
     })
 
+    res.json(orders)
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ error: "Internal server error" })
+  }
+})
+
+router.get("/filter", async (req, res) => {
+  const { data, error } = FilterSchema.safeParse(req.query)
+
+  if (error) {
+    return res.status(400).json({ error: error.flatten().fieldErrors })
+  }
+
+  const { customer_id, start_date, end_date, product_id } = data
+
+  try {
+    const orders = await db.orders.findMany({
+      where: {
+        AND: [
+          customer_id ? { customer_id } : undefined,
+          start_date && end_date
+            ? {
+                order_date: {
+                  gte: new Date(start_date),
+                  lte: new Date(end_date),
+                },
+              }
+            : undefined,
+          product_id
+            ? {
+                order_lines: {
+                  some: {
+                    product_id,
+                  },
+                },
+              }
+            : undefined,
+        ].filter(Boolean),
+      },
+    })
     res.json(orders)
   } catch (error) {
     console.error(error)
