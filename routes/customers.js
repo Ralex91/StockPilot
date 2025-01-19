@@ -23,7 +23,7 @@ router.get("/:id", async (req, res) => {
       return res.status(404).json({ message: "Customer not found" })
     }
 
-    res.json(results[0])
+    res.json(results)
   } catch (error) {
     res.status(500).json({ error: error.message })
   }
