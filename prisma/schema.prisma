@@ -1,0 +1,72 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Categories {
+  category_id   Int        @id @default(autoincrement())
+  category_name String     @db.VarChar(100)
+  description   String?    @db.Text
+  products      Products[]
+}
+
+model Customers {
+  customer_id   Int      @id @default(autoincrement())
+  customer_name String   @db.VarChar(100)
+  email         String?  @db.VarChar(100)
+  phone         String?  @db.VarChar(20)
+  address       String?  @db.Text
+  orders        Orders[]
+}
+
+model Order_Lines {
+  order_line_id Int       @id @default(autoincrement())
+  order_id      Int?
+  product_id    Int?
+  quantity      Int
+  unit_price    Decimal   @db.Decimal(10, 2)
+  orders        Orders?   @relation(fields: [order_id], references: [order_id], onDelete: Cascade, onUpdate: Restrict, map: "Order_Lines_ibfk_1")
+  products      Products? @relation(fields: [product_id], references: [product_id], onDelete: Cascade, onUpdate: Restrict, map: "Order_Lines_ibfk_2")
+
+  @@index([order_id], map: "order_id")
+  @@index([product_id], map: "product_id")
+}
+
+model Orders {
+  order_id    Int           @id @default(autoincrement())
+  order_date  DateTime      @db.Date
+  customer_id Int?
+  order_lines Order_Lines[]
+  customers   Customers?    @relation(fields: [customer_id], references: [customer_id], onUpdate: Restrict, map: "Orders_ibfk_1")
+
+  @@index([customer_id], map: "customer_id")
+}
+
+model Products {
+  product_id     Int           @id @default(autoincrement())
+  product_name   String        @db.VarChar(100)
+  description    String?       @db.Text
+  price          Decimal       @db.Decimal(10, 2)
+  stock_quantity Int
+  category_id    Int?
+  supplier_id    Int?
+  order_lines    Order_Lines[]
+  categories     Categories?   @relation(fields: [category_id], references: [category_id], onUpdate: Restrict, map: "Products_ibfk_1")
+  suppliers      Suppliers?    @relation(fields: [supplier_id], references: [supplier_id], onUpdate: Restrict, map: "Products_ibfk_2")
+
+  @@index([category_id], map: "category_id")
+  @@index([supplier_id], map: "supplier_id")
+}
+
+model Suppliers {
+  supplier_id   Int        @id @default(autoincrement())
+  supplier_name String     @db.VarChar(100)
+  contact       String?    @db.VarChar(100)
+  phone         String?    @db.VarChar(20)
+  address       String?    @db.Text
+  products      Products[]
+}
